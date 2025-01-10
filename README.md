@@ -4,3 +4,6 @@
 ### Changes that I made in readme.
 
 ### This should have a how-to document
+
+
+## To commit using a different branch
