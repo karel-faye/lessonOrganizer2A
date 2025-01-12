@@ -33,7 +33,7 @@ def Login():
         for user in users:
             if user["username"] == username and user["password"] == password:
                 print("Login successful!\n")
-                YearLevel(username)  # Pass username to keep track of the lessons
+                ProfileMenu(username)  # Pass username to keep track of the lessons
                 return  # Exit after successful login
 
         # If no match is found
@@ -53,12 +53,14 @@ def SignUp():
     surname = input("Enter last name: ")
     username = input("Enter preferred username: ")
     password = input("Enter password: ")
+    email = input("Enter email address: ")
 
     new_user = {
         "firstName": firstName,
         "surname": surname,
         "username": username,
-        "password": password
+        "password": password,
+        "email": email
     }
 
     try:
@@ -102,6 +104,68 @@ def initialize_user_data(username):
         json.dump(data, file, indent=4)
 
     
+def ProfileMenu(username):
+    while True:
+        print("\nMain Menu:")
+        print("1. Manage Profile")
+        print("2. Organize Lessons")
+        print("3. Log Out")
+        print("4. Exit")
+        
+        choice = input("Select an option: ").strip()
+        if choice == "1":
+            ManageProfile(username)
+        elif choice == "2":
+            YearLevel(username)
+        elif choice == "3":
+            print("Logging out...")
+            Intro()
+        elif choice == "4":
+            print("Exiting... Have a nice day!")
+            quit()
+        else:
+            print("Invalid option. Please try again.")
+
+
+def ManageProfile(username):
+    try:
+        with open("users.json", "r") as file:
+            users = json.load(file)
+    except (FileNotFoundError, json.JSONDecodeError):
+        print("No user data found.")
+        return
+
+    # Find the user's profile
+    user = next((u for u in users if u["username"] == username), None)
+    if not user:
+        print("User not found.")
+        return
+
+    while True:
+        print("\nProfile Management:")
+        print(f"1. First Name: {user['firstName']}")
+        print(f"2. Surname: {user['surname']}")
+        print(f"3. Email: {user['email']}")
+        print("4. Go Back")
+        
+        choice = input("Enter the number of the field to update: ").strip()
+        if choice == "1":
+            user["firstName"] = input("Enter new first name: ").strip()
+        elif choice == "2":
+            user["surname"] = input("Enter new surname: ").strip()
+        elif choice == "3":
+            user["email"] = input("Enter new email: ").strip()
+        elif choice == "4":
+            break
+        else:
+            print("Invalid option. Try again.")
+            continue
+
+        # Save changes to the JSON file
+        with open("users.json", "w") as file:
+            json.dump(users, file, indent=4)
+        print("Profile updated successfully!")
+
 
 def YearLevel(username):
     # Load lessons data for the user
