@@ -264,21 +264,27 @@ def manage_lessons(username, year_level, semester, subject):
     user_data = load_lessons_for_user(username)
     year_data = user_data.setdefault(year_level, {})
     semester_data = year_data.setdefault(semester, {})
-    lessons = semester_data.get(subject, [])
+    lessons = semester_data.get(subject, {})
+
+    # Initialize lesson statuses if not already set
+    for lesson_name in lessons.keys():
+        if "status" not in lessons[lesson_name]:
+            lessons[lesson_name]["status"] = "pending"
 
     while True:
         print(f"\nManaging lessons for {subject}:")
         if lessons:
-            for idx, lesson in enumerate(lessons, 1):
-                print(f"{idx}. {lesson}")
+            for idx, (lesson_name, lesson_data) in enumerate(lessons.items(), 1):
+                print(f"{idx}. {lesson_name} (Status: {lesson_data['status']})")
         else:
             print("- No lessons yet.")
 
         print("\nOptions:")
         print("1. Add Lesson")
         print("2. Remove Lesson")
-        print("3. Go Back")
-        print("4. Exit")
+        print("3. Update Lesson Status")
+        print("4. Go Back")
+        print("5. Exit")
         action = input("Choose an option: ")
 
         if action == "1":
@@ -286,38 +292,57 @@ def manage_lessons(username, year_level, semester, subject):
             if new_lesson in lessons:
                 print("Lesson already exists.")
             else:
-                lessons.append(new_lesson)
+                lessons[new_lesson] = {"status": "pending"}
                 print(f"Lesson '{new_lesson}' added successfully.")
                 save_lessons_to_file(username, year_level, semester, subject, lessons)
 
         elif action == "2":
             try:
-                for idx, lesson in enumerate(lessons, 1):
-                    print(f"{idx}. {lesson}")
+                lesson_list = list(lessons.keys())
+                for idx, lesson_name in enumerate(lesson_list, 1):
+                    print(f"{idx}. {lesson_name}")
                 lesson_index = int(input("Enter the number of the lesson to remove: ")) - 1
-                if lesson_index not in range(len(lessons)):
+                if lesson_index not in range(len(lesson_list)):
                     print("Invalid lesson number.")
                     continue
-                removed_lesson = lessons.pop(lesson_index)
+                removed_lesson = lesson_list[lesson_index]
+                lessons.pop(removed_lesson)
                 print(f"Lesson '{removed_lesson}' removed successfully.")
                 save_lessons_to_file(username, year_level, semester, subject, lessons)
-                return
-            
             except ValueError:
                 print("Please enter a valid number.")
 
         elif action == "3":
+            try:
+                lesson_list = list(lessons.keys())
+                for idx, lesson_name in enumerate(lesson_list, 1):
+                    print(f"{idx}. {lesson_name} (Status: {lessons[lesson_name]['status']})")
+                lesson_index = int(input("Enter the number of the lesson to update status: ")) - 1
+                if lesson_index not in range(len(lesson_list)):
+                    print("Invalid lesson number.")
+                    continue
+                selected_lesson = lesson_list[lesson_index]
+                new_status = input("Enter new status (completed/in-progress/pending): ").strip().lower()
+                if new_status in ["completed", "in-progress", "pending"]:
+                    lessons[selected_lesson]["status"] = new_status
+                    print(f"Lesson '{selected_lesson}' status updated to '{new_status}'.")
+                    save_lessons_to_file(username, year_level, semester, subject, lessons)
+                else:
+                    print("Invalid status. Try again.")
+            except ValueError:
+                print("Please enter a valid number.")
+
+        elif action == "4":
             return
-        
-        if action == "4":
+
+        elif action == "5":
             print("Exiting... Have a nice day!")
             quit()
-
 
         else:
             print("Invalid option. Try again.")
 
-
+            
 
 def FirstYear(username, year_level, user_data):
     while True:
