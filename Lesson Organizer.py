@@ -162,13 +162,13 @@ def SignUp2():
 
 
 def SignUp():
-    firstName = input("Enter first name: ")
-    surname = input("Enter last name: ")
-    username = input("Enter preferred username: ")
-    password = input("Enter password: ")
+    first_name = input("Enter first name: ").strip()
+    surname = input("Enter last name: ").strip()
+    username = input("Enter preferred username: ").strip()
+    password = input("Enter password: ").strip()
 
     new_user = {
-        "firstName": firstName,
+        "firstName": first_name,
         "surname": surname,
         "username": username,
         "password": password
@@ -190,14 +190,17 @@ def SignUp():
     with open("students.json", "w") as file:
         json.dump(students, file, indent=4)
 
-    # Create an entry for the user in the data file
+    # Initialize user data
     initialize_user_data(username)
 
     print("Sign-up successful!")
-    login = input("Do you want to log in (y/n): ").strip().lower()
-    if login == "y":
+    login_choice = input("Do you want to log in (y/n): ").strip().lower()
+    if login_choice == "y":
         Login()
+    elif login_choice == "n":
+        Intro()
     else:
+        print("Invalid input. Returning to the main menu.")
         Intro()
 
 
