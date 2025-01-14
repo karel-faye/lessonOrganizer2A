@@ -90,31 +90,33 @@ def Login():
         username = input("Enter username: ")
         password = input("Enter password: ")
 
+        # Load the JSON file and handle errors gracefully
         try:
-            # Load the JSON file
             with open("students.json", "r") as file:
                 students = json.load(file)
         except (FileNotFoundError, json.JSONDecodeError):
-            students = []  # If file doesn't exist or is empty, start with an empty user list
+            students = []  # Default to an empty list if the file doesn't exist or is corrupted
 
-        # Check if username and password match
-        for user in students:
-            if user["username"] == username and user["password"] == password:
-                print("Login successful!\n")
-                YearLevel(username)  # Pass username to keep track of the lessons
-                return  # Exit after successful login
+        # Verify credentials
+        user_found = next((user for user in students if user["username"] == username and user["password"] == password), None)
+        
+        if user_found:
+            print("Login successful!\n")
+            YearLevel(username)  # Pass username to keep track of lessons
+            return  # Exit the function after successful login
 
-        # If no match is found
+        # If no match is found, prompt the user for next action
         print("Invalid username or password.")
         choice = input("Do you want to sign up instead? (y/n): ").strip().lower()
+
         if choice == "y":
             SignUp()
-            return  # Exit the login function after signing up
+            return  # Exit after signing up
         elif choice == "n":
             print("Please try logging in again.")
             Intro()
         else:
-            print("Invalid input. Try again.")
+            print("Invalid input. Please enter 'y' or 'n'.")
 
 def SignUp2():
     firstName = input("Enter first name: ")
