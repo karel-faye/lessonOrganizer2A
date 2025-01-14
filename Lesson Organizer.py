@@ -161,8 +161,6 @@ def SignUp2():
         Intro2()
 
 
-
-
 def SignUp():
     firstName = input("Enter first name: ")
     surname = input("Enter last name: ")
