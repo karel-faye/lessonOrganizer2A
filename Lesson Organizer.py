@@ -53,7 +53,9 @@ def Intro():
             print("Invalid input. Try again.")
 
 def Login2():
-    while True:
+    max_attempts = 3  # Limit login attempts to prevent infinite loop
+
+    for attempt in range(max_attempts):
         username = input("Enter username: ")
         password = input("Enter password: ")
 
@@ -62,26 +64,31 @@ def Login2():
             with open("teachers.json", "r") as file:
                 teachers = json.load(file)
         except (FileNotFoundError, json.JSONDecodeError):
-            teachers = []  # If file doesn't exist or is empty, start with an empty user list
+            teachers = []  # Start with an empty user list if file doesn't exist or is invalid
 
-        # Check if username and password match
+        # Check if username and password match any user in the list
         for user in teachers:
-            if user["username"] == username and user["password"] == password:
+            if user.get("username") == username and user.get("password") == password:
                 print("Login successful!\n")
-                YearLevel(username)  # Pass username to keep track of the lessons
+                YearLevel(username)  # Call the next function with the username
                 return  # Exit after successful login
 
-        # If no match is found
+        # If no match is found, prompt for action
         print("Invalid username or password.")
-        choice = input("Do you want to sign up instead? (y/n): ").strip().lower()
-        if choice == "y":
-            SignUp2()
-            return  # Exit the login function after signing up
-        elif choice == "n":
-            print("Please try logging in again.")
-            Intro2()
-        else:
-            print("Invalid input. Try again.")
+        while True:
+            choice = input("Do you want to sign up instead? (y/n): ").strip().lower()
+            if choice == "y":
+                SignUp2()
+                return  # Exit after signing up
+            elif choice == "n":
+                print("Please try logging in again.")
+                break  # Allow retrying login
+            else:
+                print("Invalid input. Please enter 'y' or 'n'.")
+
+    # If maximum attempts reached
+    print("Maximum login attempts reached. Returning to the main menu.")
+    Intro2()
 
 
 
