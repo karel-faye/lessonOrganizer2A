@@ -534,7 +534,7 @@ def FourthYear(username, year_level, semester, subject_lessons):
         ], subject_lessons)
 
     elif sem == 3:
-        YearLevel(username)  # Pass username to go back to the Year Level selection
+        YearLevel(username)  # Pas username to go back to the Year Level selection
         return
 
     elif sem == 4:
