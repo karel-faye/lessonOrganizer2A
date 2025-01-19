@@ -1,6 +1,6 @@
 # Lesson Organizer
 
-The Lesson Management System is a Python-based application designed to help users manage educational content. It provides features such as secure user authentication, lesson organization by year level and semester, and data persistence through JSON files. This system is ideal for students and educators who want a straightforward tool for lesson planning.
+The Lesson Management System is a Python-based application designed to help usersmanage educational content. It provides features such as secure user authentication, lesson organization by year level and semester, and data persistence through JSON files. This system is ideal for students and educators who want a straightforward tool for lesson planning.
 ### Key Features
 1.User Authentication: Secure sign-up and log-in functionality.
 2.Lesson Management: Add, view, and delete lessons categorized by year level, semester, and subject.
